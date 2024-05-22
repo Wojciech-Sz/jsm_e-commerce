@@ -1,20 +1,17 @@
 import React from 'react'
-import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { Order } from '../../../payload/payload-types'
-import { Button } from '../../_components/Button'
-import { Gutter } from '../../_components/Gutter'
-import { HR } from '../../_components/HR'
-import { RenderParams } from '../../_components/RenderParams'
-import { formatDateTime } from '../../_utilities/formatDateTime'
-import { getMeUser } from '../../_utilities/getMeUser'
-import { mergeOpenGraph } from '../../_utilities/mergeOpenGraph'
+import { Order } from '../../../../payload/payload-types'
+import { Button } from '../../../_components/Button'
+import { HR } from '../../../_components/HR'
+import { RenderParams } from '../../../_components/RenderParams'
+import { formatDateTime } from '../../../_utilities/formatDateTime'
+import { getMeUser } from '../../../_utilities/getMeUser'
 
 import classes from './index.module.scss'
 
-export default async function Orders() {
+const Orders = async () => {
   const { token } = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to view your orders.',
@@ -44,8 +41,8 @@ export default async function Orders() {
   }
 
   return (
-    <Gutter className={classes.orders}>
-      <h1>Orders</h1>
+    <div className={classes.container}>
+      <h5 className={classes.ordersTitle}>My Orders</h5>
       {(!orders || !Array.isArray(orders) || orders?.length === 0) && (
         <p className={classes.noOrders}>You have no orders.</p>
       )}
@@ -54,11 +51,10 @@ export default async function Orders() {
         <ul className={classes.ordersList}>
           {orders?.map((order, index) => (
             <li key={order.id} className={classes.listItem}>
-              <Link className={classes.item} href={`/orders/${order.id}`}>
+              <Link className={classes.item} href={`orders/${order.id}`}>
                 <div className={classes.itemContent}>
-                  <h4 className={classes.itemTitle}>{`Order ${order.id}`}</h4>
                   <div className={classes.itemMeta}>
-                    <p>{`Ordered On: ${formatDateTime(order.createdAt)}`}</p>
+                    <h6 className={classes.itemTitle}>{`Order ${order.id}`}</h6>
                     <p>
                       {'Total: '}
                       {new Intl.NumberFormat('en-US', {
@@ -66,31 +62,18 @@ export default async function Orders() {
                         currency: 'usd',
                       }).format(order.total / 100)}
                     </p>
+                    <p>{`Ordered On: ${formatDateTime(order.createdAt)}`}</p>
                   </div>
                 </div>
-                <Button
-                  appearance="secondary"
-                  label="View Order"
-                  className={classes.button}
-                  el="button"
-                />
+                View Order
               </Link>
               {index !== orders.length - 1 && <HR />}
             </li>
           ))}
         </ul>
       )}
-      <HR />
-      <Button href="/account" appearance="primary" label="Go to account" />
-    </Gutter>
+    </div>
   )
 }
 
-export const metadata: Metadata = {
-  title: 'Orders',
-  description: 'Your orders.',
-  openGraph: mergeOpenGraph({
-    title: 'Orders',
-    url: '/orders',
-  }),
-}
+export default Orders

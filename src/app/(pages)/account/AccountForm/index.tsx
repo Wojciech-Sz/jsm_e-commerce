@@ -95,6 +95,15 @@ const AccountForm: React.FC = () => {
       <Message error={error} success={success} className={classes.message} />
       {!changePassword ? (
         <Fragment>
+          <Input
+            name="email"
+            label="Email Address"
+            required
+            register={register}
+            error={errors.email}
+            type="email"
+          />
+          <Input name="name" label="Name" register={register} error={errors.name} />
           <p>
             {'Change your account details below, or '}
             <button
@@ -106,29 +115,9 @@ const AccountForm: React.FC = () => {
             </button>
             {' to change your password.'}
           </p>
-          <Input
-            name="email"
-            label="Email Address"
-            required
-            register={register}
-            error={errors.email}
-            type="email"
-          />
-          <Input name="name" label="Name" register={register} error={errors.name} />
         </Fragment>
       ) : (
         <Fragment>
-          <p>
-            {'Change your password below, or '}
-            <button
-              type="button"
-              className={classes.changePassword}
-              onClick={() => setChangePassword(!changePassword)}
-            >
-              cancel
-            </button>
-            .
-          </p>
           <Input
             name="password"
             type="password"
@@ -146,6 +135,17 @@ const AccountForm: React.FC = () => {
             validate={value => value === password.current || 'The passwords do not match'}
             error={errors.passwordConfirm}
           />
+          <p>
+            {'Change your password below, or '}
+            <button
+              type="button"
+              className={classes.changePassword}
+              onClick={() => setChangePassword(!changePassword)}
+            >
+              cancel
+            </button>
+            .
+          </p>
         </Fragment>
       )}
       <Button
